@@ -72,6 +72,21 @@ const BiographiesPage = () => {
     }
   }, [location.search, navigate]);
 
+  const processImageSrcs = (html) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    const imgTags = doc.querySelectorAll('img');
+
+    imgTags.forEach(img => {
+      const src = img.getAttribute('src');
+      if (src && src.startsWith('/')) {
+        img.setAttribute('src', 'https://histrf.ru' + src);
+      }
+    });
+
+    return doc.body.innerHTML;
+  };
+
   // Переключение темы
   const toggleTheme = () => {
     setDarkMode((prev) => !prev);
@@ -127,7 +142,7 @@ const BiographiesPage = () => {
                     <h2 className="biography-section-heading">{section.heading}</h2>
                     <div
                       className="biography-section-content"
-                      dangerouslySetInnerHTML={{ __html: section.content }}
+                      dangerouslySetInnerHTML={{ __html: processImageSrcs(section.content) }}
                     />
                   </div>
                 ))}

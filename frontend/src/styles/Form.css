@@ -177,7 +177,7 @@
 
 .show-password-toggle {
   position: absolute;
-  right: var(--spacing-sm);
+  right: calc(var(--spacing-sm) * 3); /* еще левее */
   background: none;
   border: none;
   cursor: pointer;

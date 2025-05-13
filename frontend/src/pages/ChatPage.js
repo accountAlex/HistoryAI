@@ -207,11 +207,6 @@ const ChatPage = () => {
     }
   }, [uuid, navigate]);
 
-  // Автопрокрутка к последнему сообщению
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messagesByChat, uuid]);
-
   // Загрузка дополнительных сообщений при прокрутке вверх
   const handleScroll = (e) => {
     const element = e.target;

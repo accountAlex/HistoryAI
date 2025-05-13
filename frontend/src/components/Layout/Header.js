@@ -1,7 +1,6 @@
 // Импортируем необходимые зависимости
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import './Header.css';
 
 const Header = ({ toggleTheme, isDarkTheme }) => {
   // Состояние для мобильного меню
@@ -11,17 +10,17 @@ const Header = ({ toggleTheme, isDarkTheme }) => {
 
   // Элементы навигации
   const navItems = [
-    { path: '/chat', label: 'Чат', icon: '💬' },
-    { path: '/timeline', label: 'Таймлайн', icon: '⏳' },
-    { path: '/articles', label: 'Статьи', icon: '📝' },
-    { path: '/biographies', label: 'Биографии', icon: '👤' },
-    { path: '/popular', label: 'Популярное', icon: '🔥' },
+    { path: '/chat', label: 'Чат' },
+    { path: '/timeline', label: 'Таймлайн' },
+    { path: '/articles', label: 'Статьи' },
+    { path: '/biographies', label: 'Биографии' },
+    { path: '/popular', label: 'Популярное' },
   ];
 
   // Обработчик выхода
   const handleLogout = () => {
     localStorage.removeItem('token');
-    navigate('/login');
+    navigate('/auth');
     setIsMobileMenuOpen(false);
   };
 
@@ -46,7 +45,6 @@ const Header = ({ toggleTheme, isDarkTheme }) => {
               to={item.path}
               className={`nav-link ${location.pathname === item.path ? 'active' : ''}`}
             >
-              <span className="nav-icon">{item.icon}</span>
               {item.label}
             </Link>
           ))}
@@ -94,12 +92,11 @@ const Header = ({ toggleTheme, isDarkTheme }) => {
               className={`mobile-nav-link ${location.pathname === item.path ? 'active' : ''}`}
               onClick={toggleMobileMenu}
             >
-              <span className="nav-icon">{item.icon}</span>
               {item.label}
             </Link>
           ))}
           <button className="mobile-nav-link logout-button" onClick={handleLogout}>
-            🚪 Выйти
+            Выйти
           </button>
         </nav>
       </div>

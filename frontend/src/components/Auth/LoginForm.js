@@ -27,7 +27,6 @@ const LoginForm = ({ onSubmit, message, setMessage, goToRegister }) => {
             Email
           </label>
           <div className="input-wrapper">
-            <span className="input-icon">✉️</span>
             <input
               type="email"
               id="email"
@@ -47,7 +46,6 @@ const LoginForm = ({ onSubmit, message, setMessage, goToRegister }) => {
             Пароль
           </label>
           <div className="input-wrapper">
-            <span className="input-icon">🔒</span>
             <input
               type={showPassword ? 'text' : 'password'}
               id="password"
@@ -64,7 +62,7 @@ const LoginForm = ({ onSubmit, message, setMessage, goToRegister }) => {
               onClick={() => setShowPassword(!showPassword)}
               aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
             >
-              {showPassword ? '🙈' : '👁️'}
+              {showPassword ? '✖️' : '✔️'}
             </button>
           </div>
         </div>

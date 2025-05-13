@@ -54,7 +54,7 @@ const RegisterForm = ({ onSubmit, message, setMessage, goToLogin }) => {
               onClick={() => setShowPassword(!showPassword)}
               aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
             >
-              {showPassword ? '🙈' : '👁️'}
+              {showPassword ? '✖️' : '✔️'}
             </button>
           </div>
         </div>

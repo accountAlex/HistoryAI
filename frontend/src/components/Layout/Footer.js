@@ -1,7 +1,7 @@
 // Импортируем зависимости
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './Footer.css';
+import '../../styles/Footer.css';
 
 const Footer = () => {
   // Текущий год для копирайта
