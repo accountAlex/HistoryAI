@@ -34,7 +34,7 @@
 /* Chat Page Container */
 .chat-page-container {
   display: flex;
-  height: calc(100vh - 64px);
+  height: calc(100vh);
   background: var(--color-white);
   overflow: hidden;
 }
@@ -45,7 +45,7 @@
 
 /* Sidebar */
 .chat-sidebar {
-  width: 320px;
+  width: 296px;
   background: var(--color-white);
   border-right: 1px solid var(--color-gray-200);
   display: flex;
@@ -63,6 +63,7 @@
 }
 
 .chat-sidebar.visible {
+  margin-top: 80px;
   transform: translateX(0);
 }
 
@@ -163,6 +164,7 @@
 
 /* Main Chat Area */
 .chat-main {
+  margin-top: 80px;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -179,7 +181,12 @@
   border-bottom: 1px solid var(--color-gray-200);
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
+  flex-direction: column;
+}
+
+.chat-header-buttons {
+  display: flex;
+  gap: 1rem;
 }
 
 .dark-theme .chat-header {
@@ -412,7 +419,7 @@
 .copy-button svg {
   width: 16px;
   height: 16px;
-  stroke: var(--color-gray-400);
+  stroke: #ffffff;
 }
 
 .dark-theme .copy-button svg {
@@ -526,14 +533,20 @@
 
 .chat-input button svg,
 .chat-input button .loading-icon {
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
 }
 
 /* Animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes blink {
+  0% { opacity: 0.2; }
+  20% { opacity: 1; }
+  100% { opacity: 0.2; }
 }
 
 /* Responsive Design */
@@ -572,3 +585,108 @@
     padding: var(--spacing-sm);
   }
 }
+
+.typing-indicator {
+  display: flex;
+  align-items: center;
+}
+
+.typing-indicator span {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin: 0 2px;
+  background-color: #ccc;
+  border-radius: 50%;
+  animation: blink 1.4s infinite both;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.chat-input {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-top: 1px solid #eee;
+  background-color: #fff;
+}
+
+.input-with-button {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.chat-input-field {
+  width: 100%;
+  font-size: 16px;
+  border: 1px solid #666;
+  border-radius: 9999px;
+  outline: none;
+}
+
+.chat-input-field::placeholder {
+  color: #666 !important;
+  opacity: 1 !important;
+  font-weight: 500 !important;
+}
+
+
+.inline-button {
+  position: absolute;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #eee;
+  border: 2px solid transparent;
+  border-radius: 9999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  color: #444;
+  transition: background 0.2s;
+}
+
+.inline-button.active {
+  background-color: transparent; /* чтобы фон остался прозрачным */
+  border-color: #007bff;     /* ярко-синий border */
+  color: #007bff;                /* цвет иконки и текста тоже поменять на синий */
+}
+
+
+.inline-button:hover {
+  background-color: #ddd;
+}
+
+.inline-label {
+  display: none;
+}
+
+@media (min-width: 480px) {
+  .inline-label {
+    display: inline;
+  }
+}
+
+.send-button-input {
+  margin-left: 8px;
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  color: #555;
+  transition: color 0.2s;
+}
+
+.send-button-input:hover {
+  color: #000;
+}
+

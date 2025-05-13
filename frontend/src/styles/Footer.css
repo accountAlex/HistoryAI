@@ -69,6 +69,7 @@
   color: var(--color-gray-400);
   font-size: 0.875rem;
   margin-top: var(--spacing-xl);
+  align-content: center;
 }
 
 .dark-theme .footer-copyright {
@@ -120,11 +121,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-
-  .footer-description,
-  .footer-copyright {
-    text-align: center;
   }
 }
 

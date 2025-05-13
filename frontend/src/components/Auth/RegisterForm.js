@@ -48,14 +48,6 @@ const RegisterForm = ({ onSubmit, message, setMessage, goToLogin }) => {
               placeholder="Введите пароль"
               aria-label="Пароль"
             />
-            <button
-              type="button"
-              className="show-password-toggle"
-              onClick={() => setShowPassword(!showPassword)}
-              aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
-            >
-              {showPassword ? '✖️' : '✔️'}
-            </button>
           </div>
         </div>
         {/* Кнопка регистрации */}

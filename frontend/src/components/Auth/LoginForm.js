@@ -56,14 +56,6 @@ const LoginForm = ({ onSubmit, message, setMessage, goToRegister }) => {
               placeholder="Введите пароль"
               aria-label="Поле для ввода пароля"
             />
-            <button
-              type="button"
-              className="show-password-toggle"
-              onClick={() => setShowPassword(!showPassword)}
-              aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
-            >
-              {showPassword ? '✖️' : '✔️'}
-            </button>
           </div>
         </div>
 

@@ -1,4 +1,8 @@
 /* Определяем переменные для консистентности */
+body {
+  padding-top: 0 !important;
+}
+
 :root {
   --color-black: #000000;
   --color-white: #FFFFFF;
@@ -19,8 +23,8 @@
 /* Контейнер авторизации */
 .auth-container {
   display: flex;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100dvh;
   overflow: hidden;
   background: var(--color-black);
 }
@@ -89,11 +93,6 @@
 .dark-theme .form-card {
   background: rgba(255, 255, 255, 0.05);
   border-color: var(--color-gray-400);
-}
-
-.form-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-sm);
 }
 
 /* Форма */
@@ -237,24 +236,7 @@
   font-weight: 600;
   cursor: pointer;
   margin-top: var(--spacing-md);
-  transition: all var(--transition);
 }
-
-.dark-theme .form-nav-button {
-  color: var(--color-white);
-  border-color: var(--color-white);
-}
-
-.form-nav-button:hover {
-  background: var(--color-black);
-  color: var(--color-white);
-}
-
-.dark-theme .form-nav-button:hover {
-  background: var(--color-white);
-  color: var(--color-black);
-}
-
 /* Сообщение формы */
 .form-message {
   margin-top: var(--spacing-md);

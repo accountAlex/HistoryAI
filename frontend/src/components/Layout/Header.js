@@ -52,22 +52,8 @@ const Header = ({ toggleTheme, isDarkTheme }) => {
 
         {/* Действия в шапке */}
         <div className="header-actions">
-          <button
-            className="theme-toggle"
-            onClick={toggleTheme}
-            aria-label={isDarkTheme ? 'Переключить на светлую тему' : 'Переключить на тёмную тему'}
-          >
-            {isDarkTheme ? '☀️' : '🌙'}
-          </button>
           <button className="btn btn-secondary logout-button" onClick={handleLogout}>
             Выйти
-          </button>
-          <button
-            className="mobile-menu-button"
-            onClick={toggleMobileMenu}
-            aria-label={isMobileMenuOpen ? 'Закрыть меню' : 'Открыть меню'}
-          >
-            <span className="menu-icon"></span>
           </button>
         </div>
       </div>

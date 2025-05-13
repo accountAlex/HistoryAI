@@ -80,8 +80,7 @@ public class MessageRestController {
     ) {
         Chat chat = chatService.getChatByUuid(request.getUuid());
         messageService.saveMessage(request, chat, true, MessageTypeConstant.TEXT);
-        kafkaSenderService.sendMessage(request.getUuid(), request.getContent(), true);
-//        kafkaSenderService.sendMessage(request.getUuid(), request.getContent(), request.getNeedImages());
+        kafkaSenderService.sendMessage(request.getUuid(), request.getContent(), request.getNeedImages());
         return HttpStatus.OK;
     }
 }

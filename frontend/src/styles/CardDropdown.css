@@ -20,15 +20,11 @@
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 3px;
-    height: 100%;
-    background: var(--color-primary);
+    width: 1px; /* тоньше: 1px вместо 3px */
+    height: 100%; /* на всю высоту родителя */
+    background-color: var(--color-black);
     opacity: 0.3;
-  }
-  
-  .dark-theme .timeline-line {
-    background: var(--color-primary);
-    opacity: 0.5;
+    pointer-events: none; /* чтобы не мешала кликам */
   }
   
   .timeline-event {
@@ -52,21 +48,6 @@
     position: relative;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
-  
-  .timeline-content:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-  }
-  
-  .dark-theme .timeline-content {
-    background: var(--color-gray-500);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  }
-  
-  .dark-theme .timeline-content:hover {
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-  }
-  
   .timeline-content::before {
     content: none;
     position: absolute;
@@ -79,11 +60,6 @@
     transform: translateY(-50%);
     z-index: 2;
     transition: all 0.3s ease;
-  }
-  
-  .timeline-content:hover::before {
-    transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 0 0 6px rgba(var(--color-primary-rgb), 0.1);
   }
   
   .dark-theme .timeline-content::before {

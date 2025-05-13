@@ -10,6 +10,7 @@ import BiographiesPage from './pages/BiographiesPage';
 import BiographyDetailPage from './pages/BiographyDetailPage';
 import PopularPage from './pages/PopularPage';
 import './styles/App.css';
+import ScrollToTop from "./components/scroll/ScrollToTop";
 
 const PrivateRoute = ({ children }) => {
   const token = Cookies.get('jwtToken');
@@ -61,6 +62,7 @@ const App = () => {
 
   return (
     <div className="App">
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Navigate to="/chat" />} />
         <Route path="/auth" element={<AuthPage />} />
