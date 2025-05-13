@@ -1,0 +1,19 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: integration-group
+      topic: LlmResponse
+    producer:
+      topic: LlmRequest
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/aibuilderdb
+    username: postgres
+    password: root
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
