@@ -45,7 +45,7 @@ public class MessageRestController {
     @GetMapping
     public PagedModel<MessageModel> getChatMessages(
         @RequestParam String uuid,
-        @PageableDefault(sort = "sendAt", direction = Sort.Direction.DESC) Pageable pageable
+        @PageableDefault(sort = "sendAt", direction = Sort.Direction.ASC) Pageable pageable
     ) {
         Chat chat = chatService.getChatByUuid(uuid);
         Page<Message> messagePage = messageService.getAllByChatId(chat.getId(), pageable);

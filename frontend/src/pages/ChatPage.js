@@ -163,13 +163,23 @@ const ChatPage = () => {
                 body = msg.body;
               }
               console.log('Получено сообщение бота:', body);
-              setMessagesByChat((prev) => ({
-                ...prev,
-                [uuid]: [
-                  ...(prev[uuid] || []),
-                  { type: 'bot', content: body, sendAt: new Date().toISOString() }
-                ].sort((a, b) => new Date(a.sendAt) - new Date(b.sendAt))
-              }));
+              setMessagesByChat((prev) => {
+                const currentMessages = prev[uuid] || [];
+                // Check if message already exists
+                const messageExists = currentMessages.some(
+                  existingMsg => existingMsg.content === body && existingMsg.type === 'bot'
+                );
+                if (messageExists) {
+                  return prev;
+                }
+                return {
+                  ...prev,
+                  [uuid]: [
+                    ...currentMessages,
+                    { type: 'bot', content: body, sendAt: new Date().toISOString() }
+                  ].sort((a, b) => new Date(a.sendAt) - new Date(b.sendAt))
+                };
+              });
               setLoading(false);
             } catch (err) {
               console.error('Ошибка обработки WebSocket-сообщения:', err);
