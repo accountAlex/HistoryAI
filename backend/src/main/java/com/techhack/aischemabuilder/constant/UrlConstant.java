@@ -1,4 +1,4 @@
-package com.parsertest.constant;
+package com.techhack.aischemabuilder.constant;
 
 public class UrlConstant {
 

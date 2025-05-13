@@ -1,6 +1,6 @@
-package com.parsertest.response;
+package com.techhack.aischemabuilder.response;
 
-import com.parsertest.response.section.BiographySection;
+import com.techhack.aischemabuilder.response.section.BiographySection;
 
 import java.util.List;
 

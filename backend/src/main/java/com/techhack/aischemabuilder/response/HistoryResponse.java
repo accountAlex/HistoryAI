@@ -1,4 +1,4 @@
-package com.parsertest.response;
+package com.techhack.aischemabuilder.response;
 
 public class HistoryResponse {
 

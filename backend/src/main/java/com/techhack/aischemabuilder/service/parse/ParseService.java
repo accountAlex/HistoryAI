@@ -1,8 +1,9 @@
-package com.parsertest.service.parse;
+package com.techhack.aischemabuilder.service.parse;
 
-import com.parsertest.response.ArticleResponse;
-import com.parsertest.response.BiographyResponse;
-import com.parsertest.response.HistoryResponse;
+
+import com.techhack.aischemabuilder.response.ArticleResponse;
+import com.techhack.aischemabuilder.response.BiographyResponse;
+import com.techhack.aischemabuilder.response.HistoryResponse;
 
 import java.io.IOException;
 import java.util.List;

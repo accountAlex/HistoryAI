@@ -1,10 +1,11 @@
-package com.parsertest.service.parse;
+package com.techhack.aischemabuilder.service.parse;
 
-import com.parsertest.response.ArticleResponse;
-import com.parsertest.response.BiographyResponse;
-import com.parsertest.response.HistoryResponse;
-import com.parsertest.response.section.ArticleSection;
-import com.parsertest.response.section.BiographySection;
+
+import com.techhack.aischemabuilder.response.ArticleResponse;
+import com.techhack.aischemabuilder.response.BiographyResponse;
+import com.techhack.aischemabuilder.response.HistoryResponse;
+import com.techhack.aischemabuilder.response.section.ArticleSection;
+import com.techhack.aischemabuilder.response.section.BiographySection;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jsoup.Jsoup;

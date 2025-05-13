@@ -1,4 +1,4 @@
-package com.parsertest.response.section;
+package com.techhack.aischemabuilder.response.section;
 
 public class ArticleSection {
 
