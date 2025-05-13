@@ -3,6 +3,7 @@ import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 import { useNavigate, useParams, useLocation, Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import ReactMarkdown from 'react-markdown';
 import apiClient from '../apiClient';
 import Header from '../components/Layout/Header';
 import Footer from '../components/Layout/Footer';
@@ -287,15 +288,29 @@ const ChatPage = () => {
       <main className="chat-page-container">
         <div className={`chat-sidebar ${sidebarVisible ? 'visible' : 'hidden'}`}>
           <div className="sidebar-header">
-            <h2 className="text-xl font-semibold">Чаты</h2>
+            <h2>Conversations</h2>
             <button className="new-chat-button" onClick={handleCreateChat}>
-              Новый чат
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              New Chat
             </button>
           </div>
           <div className="chat-list">
             {error && <div className="chat-item error">{error}</div>}
             {chats.length === 0 && !error && (
-              <div className="chat-item">Нет чатов</div>
+              <div className="chat-item">No conversations yet</div>
             )}
             {chats.map((chat) => (
               <Link
@@ -303,7 +318,12 @@ const ChatPage = () => {
                 to={`/chat/${chat.uuid}`}
                 className={`chat-item ${chat.uuid === uuid ? 'active' : ''}`}
               >
-                Чат {chat.createdAt.slice(0, 10)}
+                {new Date(chat.createdAt).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })}
               </Link>
             ))}
           </div>
@@ -311,45 +331,54 @@ const ChatPage = () => {
         <div className="chat-main">
           <div className="chat-header">
             <button className="sidebar-toggle" onClick={toggleSidebar}>
-              <svg className="sidebar-toggle-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
               </svg>
             </button>
-            <h2 className="text-lg font-medium">Чат</h2>
+            <h2>Chat</h2>
           </div>
           <div className="chat-messages" onScroll={handleScroll}>
             {fetchingMessages && (
               <div className="message bot">
-                <div className="message-content">Загрузка сообщений...</div>
+                <div className="message-content">Loading messages...</div>
               </div>
             )}
             {!fetchingMessages && currentMessages.length === 0 && !error && (
               <div className="message bot">
-                <div className="message-content">История сообщений пуста</div>
+                <div className="message-content">No messages yet</div>
               </div>
             )}
             {currentMessages.map((msg, index) => (
               <div key={`${msg.sendAt}-${index}`} className={`message ${msg.type}`}>
                 <div className="message-content">
-                  {(() => {
-                    try {
-                      return JSON.stringify(JSON.parse(msg.content), null, 2);
-                    } catch {
-                      return msg.content;
-                    }
-                  })()}
+                  {msg.type === 'bot' ? (
+                    <ReactMarkdown>{msg.content}</ReactMarkdown>
+                  ) : (
+                    msg.content
+                  )}
                 </div>
                 <button
                   className="copy-button"
                   onClick={() => copyMessage(msg.content, index)}
-                  title="Копировать сообщение"
+                  title="Copy message"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
-                    className="copy-icon"
+                    className="w-4 h-4"
                   >
                     <path
                       strokeLinecap="round"
@@ -360,7 +389,7 @@ const ChatPage = () => {
                   </svg>
                 </button>
                 {copiedIndex === index && (
-                  <span className="copy-tooltip">Скопировано!</span>
+                  <span className="copy-tooltip">Copied!</span>
                 )}
               </div>
             ))}
@@ -386,7 +415,7 @@ const ChatPage = () => {
               className="chat-input-field"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Введите сообщение..."
+              placeholder="Type your message..."
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
               disabled={loading || !uuid}
             />
@@ -400,7 +429,7 @@ const ChatPage = () => {
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                className="send-icon"
+                className="w-5 h-5"
               >
                 <path
                   strokeLinecap="round"
@@ -410,29 +439,7 @@ const ChatPage = () => {
                 />
               </svg>
             </button>
-            <button
-              className="new-chat-button"
-              onClick={handleCreateChat}
-              disabled={loading}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                className="new-chat-icon"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-              Новый чат
-            </button>
           </div>
-          <div className="chat-footer">Powered by ZXCoding MISIS</div>
         </div>
       </main>
       <Footer />

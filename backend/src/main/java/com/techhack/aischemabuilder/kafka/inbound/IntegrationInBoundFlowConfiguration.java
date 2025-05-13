@@ -7,6 +7,7 @@ import com.techhack.aischemabuilder.kafka.request.LlmRequest;
 import com.techhack.aischemabuilder.kafka.response.LlmResponse;
 import com.techhack.aischemabuilder.service.chat.ChatService;
 import com.techhack.aischemabuilder.service.llm.LlmService;
+import com.techhack.aischemabuilder.service.message.MessageService;
 import com.techhack.aischemabuilder.service.websocket.WebSocketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,16 +24,18 @@ import java.util.Map;
 public class IntegrationInBoundFlowConfiguration {
 
     private final LlmService llmService;
-
     private final ChatService chatService;
+    private final MessageService messageService;
 
     @Autowired
     public IntegrationInBoundFlowConfiguration(
         LlmService llmService,
-        ChatService chatService
+        ChatService chatService,
+        MessageService messageService
     ) {
         this.llmService = llmService;
         this.chatService = chatService;
+        this.messageService = messageService;
     }
 
     @Bean
@@ -52,6 +55,14 @@ public class IntegrationInBoundFlowConfiguration {
                 case "LlmResponse":
                     LlmResponse response = objectMapper.convertValue(payloadMap, LlmResponse.class);
                     Chat chat = chatService.getChatByUuid(response.getChatUuid());
+                    // Save bot's message to database
+                    messageService.saveMessage(
+                        new com.techhack.aischemabuilder.request.SaveMessageRequest()
+                            .setUuid(response.getChatUuid())
+                            .setContent(response.getContent()),
+                        chat,
+                        false // isUser = false for bot messages
+                    );
                     llmService.handleChatMessage(chat, response.getContent());
                     break;
                 case "LlmPhotoResponse":
