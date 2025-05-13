@@ -4,6 +4,8 @@ import requests
 import os
 from openai import OpenAI
 
+import time
+from kafka.errors import NoBrokersAvailable
 from kafka import KafkaConsumer, KafkaProducer
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
@@ -11,16 +13,26 @@ import asyncio
 from playwright.async_api import async_playwright
 
 
-consumer = KafkaConsumer(
-    'LlmRequest',
-    bootstrap_servers='kafka:9092',
-    value_deserializer=lambda m: json.loads(m.decode('utf-8')),
-    auto_offset_reset='earliest',
-    enable_auto_commit=True,
-    group_id='integration-group'
-)
+
+for i in range(10):
+    try:
+        consumer = KafkaConsumer(
+            'LlmRequest',
+            bootstrap_servers='kafka:9092',
+            value_deserializer=lambda m: json.loads(m.decode('utf-8')),
+            auto_offset_reset='earliest',
+            enable_auto_commit=False,      # вручную коммитим после обработки
+            group_id='integration-group'
+        )
+        break
+    except NoBrokersAvailable:
+        print(f"[{i+1}/10] Kafka недоступен, жду 5 сек...")
+        time.sleep(5)
+else:
+    raise RuntimeError("Не удалось подключиться к Kafka после 10 попыток")
 
 producer = KafkaProducer(bootstrap_servers='kafka:9092')
+
 
 def ask_deepseek(prompt: str, system_prompt: str, api_key: str = None) -> str:
     api_key = api_key or os.getenv("DEEPSEEK_API_KEY", "sk-e46b5fda16bd40d8934ce29ff0f2e7c1")
@@ -277,17 +289,28 @@ async def handle_prompt(prompt, chatUuid, needImages):
     if (needImages):
         image_prompt = ask_deepseek(prompt=response, system_prompt=photo_generation_prompt)
         print("Image promt", image_prompt)
-        photo_url = await generate_image(image_prompt)
-        photo_urls = [photo_url]
-         # или список из нескольких
-        print("Photot urls:", photo_urls)
-        producer.send(
-            'LlmResponse',
-            json.dumps({
-                'chatUuid': chatUuid,
-                'type': 'LlmPhotoResponse',
-                'urls': photo_urls
-            }).encode('utf-8'))
+        forbidden = [
+            "<По данному запросу отсутствует информация.>",
+            "<Извините>",
+            "<Я специализируюсь на генерации альтернативных сценариев истории России>"
+        ]
+        if image_prompt.strip() and not any(m in image_prompt for m in forbidden):
+            photo_url = await generate_image(image_prompt)
+            photo_urls = [photo_url]
+            print("Photo URLs:", photo_urls)
+
+            producer.send(
+                'LlmResponse',
+                json.dumps({
+                    'chatUuid': chatUuid,
+                    'type': 'LlmPhotoResponse',
+                    'urls': photo_urls
+                }).encode('utf-8')
+        )
+        else:
+            print("Запрос содержал запрещенные слова нельзя генерировать картинку")
+    else:
+        print("No image to generate, skipping LlmPhotoResponse")
 
 
 
@@ -298,18 +321,24 @@ def handle_image(prompt, chatUuid):
 
 async def process_messages():
     print("Kafka consumer started. Waiting for messages...")
-    for message in consumer:
-        prompt = message.value.get("content")
-        chatUuid = message.value.get("chatUuid")
-        needImages = message.value.get("needImages")
-        print(needImages)
-        #needImages = message.value.get("needImages")
-        print("message ", message)
-        #type = message.value.get("type")
-        print(f"Received message for chatuuid: {chatUuid}: prompt: {prompt}")
+    for msg in consumer:
+        try:
+            value = msg.value
+            prompt   = value.get("content")
+            chatUuid = value.get("chatUuid")
+            needImages = value.get("needImages", False)
+            print(f"Received: chatUuid={chatUuid}, prompt={prompt}, needImages={needImages}")
 
+            await handle_prompt(prompt, chatUuid, needImages)
 
-        await handle_prompt(prompt, chatUuid, needImages)
+        except Exception as e:
+            # если упало — просто залогируем, но в любом случае закоммитим offset,
+            # чтобы не пытаться заново
+            print("Ошибка обработки сообщения:", e)
+
+        finally:
+            # Явно коммитим offset после любого исхода
+            consumer.commit()
 
         # match type:
         #     case "prompt":
