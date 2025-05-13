@@ -1,4 +1,0 @@
-requests
-kafka-python
-beautifulsoup4
-openai
