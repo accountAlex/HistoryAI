@@ -18,6 +18,8 @@ public class Message {
     @Column
     private String content;
 
+    private String messageType;
+
     private boolean isUser;
 
     @ManyToOne
@@ -77,6 +79,20 @@ public class Message {
 
     public Message setChatId(Long chatId) {
         this.chatId = chatId;
+        return this;
+    }
+
+    public String getMessageType() {
+        return messageType;
+    }
+
+    public Message setMessageType(String messageType) {
+        this.messageType = messageType;
+        return this;
+    }
+
+    public Message setUser(boolean user) {
+        isUser = user;
         return this;
     }
 }

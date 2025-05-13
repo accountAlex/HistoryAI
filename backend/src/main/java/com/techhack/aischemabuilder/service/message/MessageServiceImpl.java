@@ -1,5 +1,6 @@
 package com.techhack.aischemabuilder.service.message;
 
+import com.techhack.aischemabuilder.constant.MessageTypeConstant;
 import com.techhack.aischemabuilder.entity.Chat;
 import com.techhack.aischemabuilder.entity.Message;
 import com.techhack.aischemabuilder.event.MessageSavedEvent;
@@ -63,6 +64,44 @@ public class MessageServiceImpl implements MessageService {
                 new MessageSavedEvent(this, chat, request.getContent())
             );
         }
+    }
+
+    @Override
+    public void saveMessage(SaveMessageRequest request, Chat chat, boolean isUser, String messageType) {
+        Message message = new Message();
+
+        message.setChat(chat)
+            .setChatId(chat.getId())
+            .setContent(request.getContent())
+            .setMessageType(messageType)
+            .setIsUser(isUser)
+            .setSendAt(LocalDateTime.now()
+                .withNano(0)
+                .withSecond(0)
+            );
+
+        messageRepository.save(message);
+
+    }
+
+    @Override
+    @Transactional
+    public Page<Message> getTextPage(Long chatId, Pageable pageable) {
+        return messageRepository.findAllByChatIdAndMessageType(
+            chatId,
+            MessageTypeConstant.TEXT,
+            pageable
+        );
+    }
+
+    @Override
+    @Transactional
+    public Page<Message> getImagePage(Long chatId, Pageable pageable) {
+        return messageRepository.findAllByChatIdAndMessageTypeOrderBySendAt(
+            chatId,
+            MessageTypeConstant.IMAGE,
+            pageable
+        );
     }
 
 }

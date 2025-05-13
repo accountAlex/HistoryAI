@@ -1,6 +1,7 @@
 package com.techhack.aischemabuilder.controller;
 
 import com.techhack.aischemabuilder.assembler.MessageModelAssembler;
+import com.techhack.aischemabuilder.constant.MessageTypeConstant;
 import com.techhack.aischemabuilder.entity.Chat;
 import com.techhack.aischemabuilder.entity.Message;
 import com.techhack.aischemabuilder.kafka.service.KafkaSenderService;
@@ -53,13 +54,34 @@ public class MessageRestController {
         return messageModelAssembler.toPagedModel(messagePage);
     }
 
+    @GetMapping("/text")
+    public PagedModel<MessageModel> getText(
+        @RequestParam String uuid,
+        @PageableDefault(sort = "sendAt", direction = Sort.Direction.ASC) Pageable pageable
+    ) {
+        Chat chat = chatService.getChatByUuid(uuid);
+        Page<Message> page = messageService.getTextPage(chat.getId(), pageable);
+        return messageModelAssembler.toPagedModel(page);
+    }
+
+    @GetMapping("/images")
+    public PagedModel<MessageModel> getImages(
+        @RequestParam String uuid,
+        @PageableDefault(sort = "sendAt", direction = Sort.Direction.ASC) Pageable pageable
+    ) {
+        Chat chat = chatService.getChatByUuid(uuid);
+        Page<Message> page = messageService.getImagePage(chat.getId(), pageable);
+        return messageModelAssembler.toPagedModel(page);
+    }
+
     @PostMapping
     public HttpStatus saveMessage(
         @RequestBody SaveMessageRequest request
     ) {
         Chat chat = chatService.getChatByUuid(request.getUuid());
-        messageService.saveMessage(request, chat, true);
-        kafkaSenderService.sendMessage(request.getUuid(), request.getContent());
+        messageService.saveMessage(request, chat, true, MessageTypeConstant.TEXT);
+        kafkaSenderService.sendMessage(request.getUuid(), request.getContent(), true);
+//        kafkaSenderService.sendMessage(request.getUuid(), request.getContent(), request.getNeedImages());
         return HttpStatus.OK;
     }
 }

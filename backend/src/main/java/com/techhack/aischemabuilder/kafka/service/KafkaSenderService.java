@@ -24,4 +24,13 @@ public class KafkaSenderService {
         kafkaOutboundChannel.send(MessageBuilder.withPayload(request).build());
     }
 
+    public void sendMessage(
+        @NonNull String chatUuid,
+        @NonNull String message,
+        @NonNull Boolean needImages
+    ) {
+        LlmRequest request = new LlmRequest(chatUuid, message, needImages);
+        kafkaOutboundChannel.send(MessageBuilder.withPayload(request).build());
+    }
+
 }

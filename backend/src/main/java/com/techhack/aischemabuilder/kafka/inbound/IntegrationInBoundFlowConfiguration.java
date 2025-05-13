@@ -2,9 +2,12 @@ package com.techhack.aischemabuilder.kafka.inbound;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.techhack.aischemabuilder.constant.MessageTypeConstant;
 import com.techhack.aischemabuilder.entity.Chat;
 import com.techhack.aischemabuilder.kafka.request.LlmRequest;
+import com.techhack.aischemabuilder.kafka.response.LlmPhotoResponse;
 import com.techhack.aischemabuilder.kafka.response.LlmResponse;
+import com.techhack.aischemabuilder.request.SaveMessageRequest;
 import com.techhack.aischemabuilder.service.chat.ChatService;
 import com.techhack.aischemabuilder.service.llm.LlmService;
 import com.techhack.aischemabuilder.service.message.MessageService;
@@ -23,19 +26,19 @@ import java.util.Map;
 @Configuration
 public class IntegrationInBoundFlowConfiguration {
 
-    private final LlmService llmService;
     private final ChatService chatService;
     private final MessageService messageService;
+    private final WebSocketService webSocketService;
 
     @Autowired
     public IntegrationInBoundFlowConfiguration(
-        LlmService llmService,
         ChatService chatService,
-        MessageService messageService
+        MessageService messageService,
+        WebSocketService webSocketService
     ) {
-        this.llmService = llmService;
         this.chatService = chatService;
         this.messageService = messageService;
+        this.webSocketService = webSocketService;
     }
 
     @Bean
@@ -57,16 +60,33 @@ public class IntegrationInBoundFlowConfiguration {
                     Chat chat = chatService.getChatByUuid(response.getChatUuid());
                     // Save bot's message to database
                     messageService.saveMessage(
-                        new com.techhack.aischemabuilder.request.SaveMessageRequest()
+                        new SaveMessageRequest()
                             .setUuid(response.getChatUuid())
                             .setContent(response.getContent()),
                         chat,
-                        false // isUser = false for bot messages
+                        false,
+                        MessageTypeConstant.TEXT
                     );
-                    llmService.handleChatMessage(chat, response.getContent());
+                    webSocketService.sendLLMTextResponse(chat.getUuid(), response.getContent());
                     break;
                 case "LlmPhotoResponse":
-                    //логика для фото
+                    System.out.println("Зашел в топик с фото");
+                    LlmPhotoResponse photoResp = objectMapper.convertValue(payloadMap, LlmPhotoResponse.class);
+                    chat = chatService.getChatByUuid(photoResp.getChatUuid());
+
+                    // для каждого URL сохраняем и шлём
+                    for (String url : photoResp.getUrls()) {
+                        messageService.saveMessage(
+                            new SaveMessageRequest()
+                                .setUuid(photoResp.getChatUuid())
+                                .setContent(url),
+                            chat,
+                            false,
+                            MessageTypeConstant.IMAGE
+                        );
+                        System.out.println("Image url: " + url);
+                        webSocketService.sendLLMPhotoResponse(chat.getUuid(), url);
+                    }
                     break;
                 default:
                     System.out.println("Неизвестный тип сообщения: " + messageType);
