@@ -1,3 +1,4 @@
+// Импортируем зависимости
 import React from 'react';
 import ChatSidebar from './ChatSidebar';
 import ChatMessages from './ChatMessages';
@@ -22,10 +23,14 @@ const ChatContainer = ({
   handleScroll,
   uuid,
   navigate,
-  darkMode
+  darkMode,
 }) => {
+  // Проверяем статус соединения (заглушка, можно заменить реальной логикой)
+  const isConnected = true; // Предполагаем, что соединение активно
+
   return (
-    <div className="chat-wrapper" style={{ display: 'flex', height: 'calc(100vh - 140px)', width: '100vw' }}>
+    <div className="chat-wrapper">
+      {/* Боковая панель */}
       <ChatSidebar
         chats={chats}
         sidebarVisible={sidebarVisible}
@@ -35,15 +40,32 @@ const ChatContainer = ({
         navigate={navigate}
         darkMode={darkMode}
       />
-      <div className="chat-container" style={{ flex: 1, display: 'flex', flexDirection: 'column', width: '100%' }}>
-        <div className="chat-header" style={{ padding: '15px 20px', background: darkMode ? '#0F0F0F' : '#FAFAFA', borderBottom: `1px solid ${darkMode ? '#2A2A2A' : '#E0E0E0'}`, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)' }}>
-          <button className="sidebar-toggle" onClick={toggleSidebar} style={{ marginRight: '15px', background: 'none', border: 'none', cursor: 'pointer' }}>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="sidebar-toggle-icon" style={{ width: '24px', height: '24px', color: darkMode ? '#E0E0E0' : '#333' }}>
+      {/* Основной контейнер чата */}
+      <div className="chat-container">
+        {/* Заголовок чата */}
+        <div className="chat-header">
+          <button
+            className="sidebar-toggle"
+            onClick={toggleSidebar}
+            aria-label={sidebarVisible ? 'Скрыть боковую панель' : 'Показать боковую панель'}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              className="sidebar-toggle-icon"
+            >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: '600', color: darkMode ? '#E0E0E0' : '#333', margin: 0, letterSpacing: '-0.02em' }}>Grok Assistant</h1>
+          <h1>Grok Assistant</h1>
+          {/* Индикатор статуса */}
+          <span className={`status-indicator ${isConnected ? 'connected' : 'disconnected'}`}>
+            {isConnected ? '🟢 Онлайн' : '🔴 Оффлайн'}
+          </span>
         </div>
+        {/* Сообщения */}
         <ChatMessages
           currentMessages={currentMessages}
           fetchingMessages={fetchingMessages}
@@ -54,6 +76,7 @@ const ChatContainer = ({
           handleScroll={handleScroll}
           darkMode={darkMode}
         />
+        {/* Поле ввода */}
         <ChatInput
           message={message}
           setMessage={setMessage}

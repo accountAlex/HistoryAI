@@ -1,10 +1,24 @@
 body {
-    margin: 0;
-    font-family: 'Inter', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-  
-  code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-  }
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #FFFFFF;
+  color: #000000;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  background: #F5F5F5;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+}
+
+.dark-theme body {
+  background: #000000;
+  color: #FFFFFF;
+}
+
+.dark-theme code {
+  background: #4B4B4B;
+}
